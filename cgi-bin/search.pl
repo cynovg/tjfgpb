@@ -6,6 +6,7 @@ use CGI;
 use File::Slurp;
 use Const::Fast;
 use HTML::Table;
+use HTML::Escape qw/escape_html/;
 
 use FindBin qw( $Bin );
 use lib "$Bin/../lib/";
@@ -28,7 +29,7 @@ sub main {
 				-head => [ qw/message/ ],
 			);
 			for (@$result) {
-				$table->addRow($_);
+				$table->addRow(escape_html($_));
 			}
 			$html =~ s/<!-- RESULT -->/$table/;
 			$html .= "<br /><div>\n<p>total $count</p>\n</div>\n" if $count > 100;
