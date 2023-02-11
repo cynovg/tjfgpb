@@ -24,11 +24,11 @@ sub main {
 		my $html = read_file($root . "templates/search_form.html");
 		if ($count) {
 			my $table = HTML::Table->new(
-				-cols => 2,
-				-head => [ qw/id message/ ],
+				-cols => 1,
+				-head => [ qw/message/ ],
 			);
 			for (@$result) {
-				$table->addRow($_->{'id'}, $_->{'message'});
+				$table->addRow($_);
 			}
 			$html =~ s/<!-- RESULT -->/$table/;
 			$html .= "<br /><div>\n<p>total $count</p>\n</div>\n" if $count > 100;
