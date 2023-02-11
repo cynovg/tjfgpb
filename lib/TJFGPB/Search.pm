@@ -17,7 +17,6 @@ sub search {
 sub _search_by_address {
 	my ($dbh, $address) = @_;
 
-	$address = $dbh->quote($address);
 	my $count = $dbh->selectrow_array(<<SQL_COUNT, {}, $address, '%' . $address . '%');
 SELECT
 	count(*)

@@ -21,6 +21,7 @@ sub main {
 	print $cgi->header(-charset => 'utf8');
 	if ($cgi->request_method eq 'POST' && (my $address = scalar $cgi->param("address"))) {
 		my $dbh = get_dbh();
+		$address = 'error' if $address !~ /^[\w\d\@.-]+\Z/;
 		my ($count, $result) = search($dbh, address => $address);
 		my $html = read_file($root . "templates/search_form.html");
 		if ($count) {
