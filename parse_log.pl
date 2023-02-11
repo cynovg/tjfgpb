@@ -8,56 +8,56 @@ use FindBin qw( $Bin );
 use lib "$Bin/lib/";
 
 use TJFGPB::Utils qw(get_dbh);
+use TJFGPB::Process qw(fill_parts);
 
 const my $logname => "out";
 
 sub main {
-	store_log(parse_log($logname));
+	my ($messages_count, $logs_count) = store_log(parse_log($logname));
+	printf("MESSAGES ADDED [%s]\n", $messages_count);
 }
 
 sub store_log {
-	my ($messages, $log) = @_;
-	return;
+	my ($parts) = @_;
+
+	my $dbh = get_dbh();
+	my $messages_count = store_messages($dbh, $parts->{'message'});
+
+	return $messages_count;
+}
+
+sub store_messages {
+	my ($dbh, $messages) = @_;
+
+	my ($messages_count);
+	while (my @part = splice(@$messages, 0, 500)) {
+		my $values = join(", ", map {
+			sprintf("( %s )",
+				join(",",
+					$dbh->quote($_->{'timestamp'}),
+					$dbh->quote($_->{'id'}),
+					$dbh->quote($_->{'int_id'}),
+					$dbh->quote($_->{'str'})
+				)
+			)
+		} @part);
+		$messages_count += $dbh->do("INSERT INTO `message` (`created`, `id`, `int_id`, `str`) VALUES " . $values);
+	}
+	return $messages_count;
 }
 
 sub parse_log {
 	my ($filename) = @_;
-	my (@log, @messages);
+	my $parts;
 	open(my $fh, "<", $filename) or die "Cant open log: $!\n";
 	while (<$fh>) {
 		chomp;
-		s/^(?<timestamp>\S+\s+\S+)\s+(?<int_id>\S+)\s+//;
-		my $timestamp = $+{'timestamp'};
-		my $int_id    = $+{'int_id'};
-		if (/^(?<flag>(?:<=|=>|->|\*\*|==))\s+(?<address>\S+)\s+(?<message>.*)$/) {
-			my $flag    = $+{'flag'};
-			my $address = $+{'address'};
-			my $message = $+{'message'};
-			if ($flag eq "<=") {
-				push @messages, {
-					timestamp => $timestamp,
-					int_id    => $int_id,
-					str       => sprintf("%s %s %s %s", $int_id, $flag, $address, $message),
-				};
-			}
-			else {
-				push @log, {
-					timestamp => $timestamp,
-					int_id    => $int_id,
-					address   => $address,
-					str       => $message,
-				};
-			}
-		}
-		else {
-			push @log, {
-				timestamp => $timestamp,
-				int_id    => $int_id,
-				str       => $_,
-			};
-		}
+		my ($type, $value) = fill_parts($_);
+		push @{$parts->{$type}}, $value;
 	}
-	return \@messages, \@log;
+	return $parts;
 }
+
+
 
 main(@ARGV);
