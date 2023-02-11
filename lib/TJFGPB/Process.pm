@@ -40,7 +40,7 @@ sub fill_parts {
 			timestamp => $timestamp,
 			int_id    => $int_id,
 			address   => undef,
-			str       => $_,
+			str       => $line,
 		};
 	}
 	return %part;
