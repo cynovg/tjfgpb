@@ -17,7 +17,7 @@ sub search {
 sub _search_by_address {
 	my ($dbh, $address) = @_;
 
-	my $count = $dbh->selectrow_array(<<SQL_COUNT, {}, $address, $address);
+	my $count = $dbh->selectrow_array(<<SQL_COUNT, {}, $address, '%' . $address . '%');
 SELECT
 	count(*)
 FROM
@@ -38,7 +38,7 @@ AS
 `a`
 SQL_COUNT
 
-	my $result = $dbh->selectall_arrayref(<<SQL, { Slice => {} }, $address, $address);
+	my $result = $dbh->selectall_arrayref(<<SQL, { Slice => {} }, $address, '%' . $address . '%');
 SELECT
 	`str`
 FROM
