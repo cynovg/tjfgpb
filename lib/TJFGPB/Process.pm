@@ -23,7 +23,7 @@ sub fill_parts {
 				timestamp => $timestamp,
 				int_id    => $int_id,
 				id        => $+{'id'},
-				str       => sprintf("%s %s %s %s", $int_id, $flag, $address, $message),
+				str       => "$int_id $flag $address $message",
 			};
 		}
 		else {
