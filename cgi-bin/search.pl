@@ -29,7 +29,7 @@ sub main {
 				-head => [ qw/message/ ],
 			);
 			for (@$result) {
-				$table->addRow(escape_html($_));
+				$table->addRow("<pre>" . escape_html($_) . "</pre>");
 			}
 			$html =~ s/<!-- RESULT -->/$table/;
 			$html .= "<br /><div>\n<p>total $count</p>\n</div>\n" if $count > 100;
