@@ -15,28 +15,32 @@ const my $user     => 'tjfgpb';
 const my $passwd   => 'qwerty';
 
 sub get_dbh {
-    my $dbh = DBI->connect( "DBI:mysql:database=$database;host=$host",
-        $user, $passwd, { PrintError => 0, RaiseError => 1 } );
+	my $dbh = DBI->connect(
+		"DBI:mysql:database=$database;host=$host",
+		$user, $passwd, { PrintError => 0, RaiseError => 1 }
+	);
 
-    $dbh->{'mysql_enable_utf8mb4'} = 1;
+	$dbh->{'mysql_enable_utf8mb4'} = 1;
 
-    return $dbh;
+	return $dbh;
 }
 
 sub store_logs {
 	my ($dbh, $logs) = @_;
 	my ($logs_count);
 	while (my @part = splice(@$logs, 0, 500)) {
-		my $values = join(", ", map {
-			sprintf("( %s )",
-				join(",",
-					$dbh->quote($_->{'timestamp'}),
-					$dbh->quote($_->{'id'}),
-					$dbh->quote($_->{'str'}),
-					$dbh->quote($_->{'address'}),
+		my $values = join(", ",
+			map {
+				sprintf("( %s )",
+					join(",",
+						$dbh->quote($_->{'timestamp'}),
+						$dbh->quote($_->{'id'}),
+						$dbh->quote($_->{'str'}),
+						$dbh->quote($_->{'address'}),
+					)
 				)
-			)
-		} @part);
+			} @part
+		);
 		$logs_count += $dbh->do("INSERT INTO `log` (`created`, `int_id`, `str`, `address`) VALUES " . $values);
 	}
 	return $logs_count;
@@ -47,16 +51,18 @@ sub store_messages {
 
 	my ($messages_count);
 	while (my @part = splice(@$messages, 0, 500)) {
-		my $values = join(", ", map {
-			sprintf("( %s )",
-				join(",",
-					$dbh->quote($_->{'timestamp'}),
-					$dbh->quote($_->{'id'}),
-					$dbh->quote($_->{'int_id'}),
-					$dbh->quote($_->{'str'}),
+		my $values = join(", ",
+			map {
+				sprintf("( %s )",
+					join(",",
+						$dbh->quote($_->{'timestamp'}),
+						$dbh->quote($_->{'id'}),
+						$dbh->quote($_->{'int_id'}),
+						$dbh->quote($_->{'str'}),
+					)
 				)
-			)
-		} @part);
+			} @part
+		);
 		$messages_count += $dbh->do("INSERT INTO `message` (`created`, `id`, `int_id`, `str`) VALUES " . $values);
 	}
 	return $messages_count;
