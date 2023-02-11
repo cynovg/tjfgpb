@@ -33,8 +33,8 @@ sub store_logs {
 			map {
 				sprintf("( %s )",
 					join(",",
-						$dbh->quote($_->{'timestamp'}),
-						$dbh->quote($_->{'id'}),
+						$dbh->quote($_->{'created'}),
+						$dbh->quote($_->{'int_id'}),
 						$dbh->quote($_->{'str'}),
 						$dbh->quote($_->{'address'}),
 					)
@@ -55,7 +55,7 @@ sub store_messages {
 			map {
 				sprintf("( %s )",
 					join(",",
-						$dbh->quote($_->{'timestamp'}),
+						$dbh->quote($_->{'created'}),
 						$dbh->quote($_->{'id'}),
 						$dbh->quote($_->{'int_id'}),
 						$dbh->quote($_->{'str'}),

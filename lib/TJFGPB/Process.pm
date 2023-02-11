@@ -3,6 +3,7 @@ use utf8;
 use v5.30;
 use warnings;
 use Exporter;
+use List::Util qw(any);
 
 our @ISA       = qw(Exporter);
 our @EXPORT_OK = qw(fill_parts);
@@ -11,36 +12,32 @@ sub fill_parts {
 	my ($line) = @_;
 
 	my %part;
-	$line =~ s/^(?<timestamp>\S+\s+\S+)\s+(?<int_id>\S+)\s+//;
-	my $timestamp = $+{'timestamp'};
-	my $int_id    = $+{'int_id'};
-	if ($line =~ /^(?<flag>(?:<=|=>|->|\*\*|==))\s+(?<address>\S+)\s+(?<message>.*)$/) {
-		my $flag    = $+{'flag'};
-		my $address = $+{'address'};
-		my $message = $+{'message'};
+	my ($date, $time, $int_id, $flag, $address, @parts) = split(" ", $line);
+	if (any { $flag eq $_ } ('<=', '=>', '->', '**', '==')) {
+		my $message = join(" ", @parts);
 		if ($flag eq "<=" && $message =~ /\sid=(?<id>\S+)/) { # skip lines wo id
 			$part{'message'} = {
-				timestamp => $timestamp,
-				int_id    => $int_id,
-				id        => $+{'id'},
-				str       => "$int_id $flag $address $message",
+				created => "$date $time",
+				int_id  => $int_id,
+				id      => $+{'id'},
+				str     => "$int_id $flag $address $message",
 			};
 		}
 		else {
 			$part{'log'} = {
-				timestamp => $timestamp,
-				int_id    => $int_id,
-				address   => $address,
-				str       => "$int_id $line",
+				created => "$date $time",
+				int_id  => $int_id,
+				address => $address,
+				str     => "$int_id $message",
 			};
 		}
 	}
 	else {
 		$part{'log'} = {
-			timestamp => $timestamp,
-			int_id    => $int_id,
-			address   => undef,
-			str       => "$int_id $line",
+			created => "$date $time",
+			int_id  => $int_id,
+			address => undef,
+			str     => "$int_id " . join(" ", grep { $_ } $flag, $address, @parts),
 		};
 	}
 	return %part;
