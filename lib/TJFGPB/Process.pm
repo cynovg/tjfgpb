@@ -15,7 +15,7 @@ sub fill_parts {
 	my ($date, $time, $int_id, $flag, $address, @parts) = split(" ", $line);
 	if (any { $flag eq $_ } ('<=', '=>', '->', '**', '==')) {
 		my $message = join(" ", @parts);
-		if ($flag eq "<=" && $message =~ /\sid=(?<id>\S+)/) { # skip lines wo id
+		if ($flag eq "<=" && $message =~ /\sid=(?<id>\d+)/) { # skip lines wo id
 			$part{'message'} = {
 				created => "$date $time",
 				int_id  => $int_id,
