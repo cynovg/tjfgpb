@@ -5,7 +5,7 @@ use warnings;
 use Const::Fast;
 
 use FindBin qw( $Bin );
-use lib "$Bin/lib/";
+use lib "$Bin/../lib/";
 
 use TJFGPB::Utils qw(get_dbh store_logs store_messages);
 use TJFGPB::Process qw(fill_parts);
