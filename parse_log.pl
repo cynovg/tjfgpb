@@ -13,19 +13,16 @@ use TJFGPB::Process qw(fill_parts);
 const my $logname => "out";
 
 sub main {
-	my ($messages_count, $logs_count) = store_recs(parse_log($logname));
-	printf("MESSAGES ADDED [%s]\n", $messages_count);
-	printf("LOGS ADDED [%s]\n", $logs_count);
+	store_recs(parse_log($logname));
 }
 
 sub store_recs {
 	my ($parts) = @_;
 
 	my $dbh = get_dbh();
-	my $messages_count = store_messages($dbh, $parts->{'message'});
-	my $logs_count = store_logs($dbh, $parts->{'log'});
+	store_messages($dbh, $parts->{'message'});
+	store_logs($dbh, $parts->{'log'});
 
-	return $messages_count, $logs_count;
 }
 
 sub store_logs {
@@ -58,7 +55,7 @@ sub store_messages {
 					$dbh->quote($_->{'timestamp'}),
 					$dbh->quote($_->{'id'}),
 					$dbh->quote($_->{'int_id'}),
-					$dbh->quote($_->{'str'})
+					$dbh->quote($_->{'str'}),
 				)
 			)
 		} @part);
