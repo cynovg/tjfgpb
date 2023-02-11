@@ -31,7 +31,7 @@ sub fill_parts {
 				timestamp => $timestamp,
 				int_id    => $int_id,
 				address   => $address,
-				str       => $message,
+				str       => "$int_id $line",
 			};
 		}
 	}
@@ -40,7 +40,7 @@ sub fill_parts {
 			timestamp => $timestamp,
 			int_id    => $int_id,
 			address   => undef,
-			str       => $line,
+			str       => "$int_id $line",
 		};
 	}
 	return %part;
