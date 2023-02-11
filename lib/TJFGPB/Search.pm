@@ -17,7 +17,53 @@ sub search {
 sub _search_by_address {
 	my ($dbh, $address) = @_;
 
-	return [ { id => "current_id", message => "address" }];
+	my $count = $dbh->selectrow_array(<<SQL_COUNT, {}, $address, $address);
+SELECT
+	count(*)
+FROM
+	(SELECT
+		 `str`
+	 FROM
+		 `log`
+	 WHERE
+		`address` = ?
+	 UNION
+	 SELECT
+		 `str`
+	 FROM `message`
+	 WHERE
+		`str` LIKE ?
+	)
+AS
+`a`
+SQL_COUNT
+
+	my $result = $dbh->selectall_arrayref(<<SQL, { Slice => {} }, $address, $address);
+SELECT
+	`str`
+FROM
+	(SELECT
+		`created`, `int_id`, `str`
+		FROM
+			`log`
+		WHERE
+			`address` = ?
+	 UNION
+	 SELECT
+		`created`, `int_id`, `str`
+		FROM `message`
+		WHERE `str` LIKE ?
+	)
+AS
+	`a`
+ORDER BY
+	`int_id`,
+	`created`
+LIMIT 100
+SQL
+
+
+	return $count, [map { $_->{'str'} } @$result];
 }
 
 1;
