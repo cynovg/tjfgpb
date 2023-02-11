@@ -1,3 +1,4 @@
+requires 'CGI';
 requires 'DBI';
 requires 'Const::Fast';
 requires 'File::Slurp';
