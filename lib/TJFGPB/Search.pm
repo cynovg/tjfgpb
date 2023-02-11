@@ -22,14 +22,14 @@ SELECT
 	count(*)
 FROM
 	(SELECT
-		 `str`
+		`created`,`int_id`, `str`
 	 FROM
 		 `log`
 	 WHERE
 		`address` = ?
 	 UNION
 	 SELECT
-		 `str`
+		 `created`, `int_id`, `str`
 	 FROM `message`
 	 WHERE
 		`str` LIKE ?
