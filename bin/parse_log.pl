@@ -20,7 +20,7 @@ sub main {
 sub store_recs {
 	my ($parts) = @_;
 
-	my $dbh = get_dbh();
+	state $dbh = get_dbh();
 	store_messages($dbh, $parts->{'message'});
 	store_logs($dbh, $parts->{'log'});
 
