@@ -39,6 +39,8 @@ AS
 `a`
 SQL_COUNT
 
+	return unless $count;
+
 	my $result = $dbh->selectall_arrayref(<<SQL, { Slice => {} }, $address, '%' . $address . '%');
 SELECT
 	`str`
