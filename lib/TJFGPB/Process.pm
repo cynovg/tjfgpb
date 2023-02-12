@@ -11,6 +11,7 @@ our @EXPORT_OK = qw(fill_parts);
 sub fill_parts {
 	my ($line) = @_;
 
+	return if length($line) < 3;
 	my %part;
 	my ($date, $time, $int_id, $flag, $address, @parts) = split(" ", $line);
 	if (any { $flag eq $_ } ('<=', '=>', '->', '**', '==')) {

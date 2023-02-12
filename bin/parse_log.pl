@@ -35,6 +35,7 @@ sub parse_log {
 		chomp;
 		$lines_counter++;
 		my ($type, $value) = fill_parts($_);
+		next unless $type;
 		push @{ $parts->{$type} }, $value;
 		if ($lines_counter == $part_count) {
 			store_recs($parts);
