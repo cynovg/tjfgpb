@@ -32,8 +32,8 @@ sub main {
 			for (@$result) {
 				$table->addRow("<pre>" . escape_html($_) . "</pre>");
 			}
+			$table .= "<br />\n<div>\n\t<p>total $count</p>\n</div>\n" if $count > 100;
 			$html =~ s/<!-- RESULT -->/$table/;
-			$html .= "<br /><div>\n<p>total $count</p>\n</div>\n" if $count > 100;
 		} else {
 			my $not_found = "<div>\n<p>Address <i><b>$address</b></i> not found</p>\n</div>\n";
 			$html =~ s/<!-- RESULT -->/$not_found/;
