@@ -12,6 +12,7 @@ our @EXPORT_OK = qw(search);
 sub search {
 	my ($dbh, $type, $string) = @_;
 	return _search_by_address($dbh, $string) if $type eq 'address';
+	return;
 }
 
 sub _search_by_address {
